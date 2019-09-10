@@ -105,7 +105,8 @@
 
 ### C字符串处理
 
-
+- strcmp(char* a, char* b)
+- 传递字符串参数入函数 (char* s)
 
 
 
