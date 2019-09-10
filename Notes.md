@@ -29,7 +29,71 @@
 
 
 
+### 模板类
 
+- 判断闰年宏定义模板【别记错了】！
+
+  ```c++
+  #define ISLEAP(x) (x % 100 != 0 && x % 4 == 0) || (x % 400 == 0) ? 1 : 0
+  ```
+
+  - 需要搭配日期数组定义进行使用
+
+  ```c++
+  int dayOfMonth[13][2] = {
+  	0,0, // 补位便于月份数位对齐至1
+  	31,31,
+  	28,29,
+  	31,31,
+  	30,30,
+    31,31,
+    30,30,
+    31,31,
+    31,31,
+    30,30,
+    31,31,
+    30,30,
+    31,31
+  }
+  ```
+
+- 日期结构体数组
+
+  ```c++
+  struct Date {
+    int day;
+    int month;
+    int year;
+    void nextDay() {  // 查找当前日期的下一天日期
+      day ++;
+      if(day > dayOfMonth[month][ISLEAP(year)]){
+        day = 1;
+        month ++;
+        if(month > 12) {
+          month = 1;
+          year ++;
+        }
+      }
+    }
+  }
+  ```
+
+- 日期预处理（存储每一天的信息)
+
+  ```c++
+  int buf[5001][13][2];
+  int cnt = 0;  // 例如存储当前日期为总共的第几天 
+  Date tmp;
+  tmp.day = 1;
+  tmp.month = 1;
+  tmp.year = 0;
+  while(tmp.year < 5001) {
+    buf[tmp.year][tmp.month][tmp.day] = (cnt++);  // save some info
+    tmp.nextDay();
+  }
+  ```
+
+  
 
 ### 注意事项
 
@@ -47,7 +111,17 @@
 
 ### I/O
 
+- 绝对不能printf() 和 cin 混用！！！
 
+- 多组输入用while(scanf() != EOF) 的循环形式
+
+- 输入特定位数的整数
+
+  ```c++
+  scanf("%4d%2d%2d", &year, &month, &day);
+  ```
+
+  
 
 
 
