@@ -1,3 +1,7 @@
+/*
+	EXCEL 排序
+	注意排序属性值条件
+*/
 #include <bits/stdc++.h>
 #define SIZE 100010
 using namespace std;

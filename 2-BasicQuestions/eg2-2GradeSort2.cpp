@@ -1,5 +1,6 @@
 /*
-使用重载运算符对struct排序
+	成绩排序
+	使用重载运算符对struct排序
 */
 #include <bits/stdc++.h>
 #define SIZE 1100

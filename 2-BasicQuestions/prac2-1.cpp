@@ -1,3 +1,6 @@
+/*
+	特殊排序
+*/
 #include <bits/stdc++.h>
 #define SIZE 1100
 using namespace std;

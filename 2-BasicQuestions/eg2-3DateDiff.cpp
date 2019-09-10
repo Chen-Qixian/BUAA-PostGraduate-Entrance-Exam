@@ -1,3 +1,6 @@
+/*
+	日期差值
+*/
 #include <bits/stdc++.h>
 #define ISLEAP(x) (x % 100 != 0 && x % 4 == 0) || (x % 400 == 0) ? 1 : 0
 using namespace std;

@@ -1,3 +1,6 @@
+/*
+	字符串内排序
+*/
 #include <bits/stdc++.h>
 #define SIZE 220
 using namespace std;
