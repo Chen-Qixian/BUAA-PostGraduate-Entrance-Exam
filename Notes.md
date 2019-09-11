@@ -23,9 +23,6 @@
   }
   ```
 
-  
-
-
 
 
 
@@ -93,7 +90,30 @@
   }
   ```
 
-  
+
+- Huffman树模板
+
+  ```c++
+  /*模拟Huffman树计算总权值sum_weight代码*/
+  priority_queue<int, vector<int>, greater<int> > Q;
+  while(Q.empty()) Q.pop();
+  for(int i = 0 ; i < n ; i ++) {
+    scanf("%d", &x);
+    Q.push(x);
+  }
+  int sum_weight = 0;
+  int a, b;
+  while(Q.size() > 1){
+    a = Q.top();
+    Q.pop();
+    b = Q.top();
+    Q.pop();
+    Q.push(a + b);
+    sum_weight += (a + b);
+  }
+  ```
+
+  - Huffman树权值和：为所有非叶节点权值和。
 
 ### 注意事项
 
@@ -101,6 +121,7 @@
 - char[]字符串数组输出前需要为结尾添加'\0'!
 - 浮点数除法：要使用double类型定义各项数据
 - 注意减法、除法的计算顺序
+- scanf("%d") / scanf("%s") 操作会留下一个\n在缓冲区中，若下一次输入使用scanf("%c")读字符会读入此换行符！因此每次使用scanf("%c")时务必注意！先配合一个getchar()使用
 
 
 
@@ -182,6 +203,21 @@
   while(!S.empty()) S.pop(); //清空栈S
 ```
   
-  
 
 - priority_queue用法
+
+  - 优先队列：默认为大顶堆（实现为堆的数据结构）
+  - 常用：Huffman树（这类经常需要调整数据存储为按序排列的问题）
+
+  ```c++
+  #include <queue>
+  priority_queue<int> Q;  //定义一个int型优先队列（默认大顶堆）
+  priority_queue<int, vector<int>, greater<int> > Q;   // 小顶堆的声明（即较小数据排在前面）注意两个>之间要有空格！
+  Q.push(i);	// 将i加入Q
+  Q.pop();	// 弹出堆顶
+  Q.top(); // 取得堆顶元素
+  Q.size(); // 获取队列大小
+  while(!Q.empty()) Q.pop(); // 清空队列
+  ```
+
+  
