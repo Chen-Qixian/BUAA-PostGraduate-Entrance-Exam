@@ -115,6 +115,62 @@
 
   - Huffman树权值和：为所有非叶节点权值和。
 
+- 二叉树的建立
+
+  - 二叉树存储、建立模板
+
+  ```c++
+  struct Node {
+    Node *left;
+    Node *right;
+    int val;
+  } Tree[SIZE];  // 数组静态分配空间
+  
+  int loc;       // 分配到的下标，每个循环用例开始时置0
+  // 节点分配创建方法
+  Node *creat() {
+    Tree[loc].left = Tree[loc].right = NULL;
+    return &Tree[loc ++];  // 注意返回指针类型
+  }
+  ```
+
+  - 二叉树遍历模板
+
+  ```c++
+  // 前序遍历
+  void preOrder(Node *t) {
+    /*visit Node t*/
+    if(t -> left) {
+      preOrder(t -> left);
+    }
+    if(t -> right) {
+      preOrder(t -> right);
+    }
+  }
+  // 中序遍历
+  void inOrder(Node *t) {
+    if(t -> left) {
+     	inOrder(t -> left);
+    }
+    /*visit Node t*/
+    if(t -> right) {
+      inOrder(t -> right);
+    }
+  }
+  // 后序遍历
+  void postOrder(Node *t) {
+  	if(t -> left) {
+      postOrder(t -> left);
+    } 
+    if(t -> right) {
+      postOrder(t -> right);
+    }
+    /*visit Node t*/
+  }
+  ```
+
+  
+
 ### 注意事项
 
 - struct 结构体中不能定义string！
@@ -201,6 +257,7 @@
   S.pop(); //弹出栈顶元素
   int x = S.top(); //取栈顶元素
   while(!S.empty()) S.pop(); //清空栈S
+  ```
 ```
   
 
@@ -218,6 +275,6 @@
   Q.top(); // 取得堆顶元素
   Q.size(); // 获取队列大小
   while(!Q.empty()) Q.pop(); // 清空队列
-  ```
+```
 
   
