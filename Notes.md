@@ -169,7 +169,27 @@
   }
   ```
 
-  
+
+- BST的建立（插入节点法）
+
+  ```c++
+  Node *insert(Node* t, int x) {
+    if(t == NULL) {
+      t = creat();
+      t -> val = x;
+      return t;
+    }
+    else if(x < t -> val) {
+      x -> left = insert(x -> left, x);
+    }
+    else if(x > t -> val) {
+      x -> right = insert(x -> right, x);
+    }
+    return t;
+  }
+  ```
+
+  - 注意此处不给出插入值x于当前节点值相等的判断，这是因为，输入相等值的时候不应重复插入节点。
 
 ### 注意事项
 
