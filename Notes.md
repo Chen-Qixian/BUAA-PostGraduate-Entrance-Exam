@@ -242,6 +242,80 @@
     - 先用欧拉筛初始化得到一定范围内的素数
     - 从小向大尝试用待分解数除质数列表
     - 注意超大质因数的处理：判断循环结束条件为待分解数被除到 n = 1 ，如果在素数表范围内n得不到1，则剩下的n必为一质因数，且次数为1。
+  - 注意：求所有的约数
+
+- 高精度整数运算
+
+  ```c++
+  // 高精度整数结构体定义
+  struct bigInt{
+    int digit[SIZE];
+    int size;
+    // 初始化该高精度整数
+    void init() {
+      size = 0;
+      for(int i = 0 ; i < SIZE ; i ++) {
+        digit[i] = 0;
+      }
+    }
+    // 从输入字符串读取数字，4位一组，倒序存储
+    void set(char s[]) {
+      init();
+      int l = strlen(s);
+      // i字符串下标，t当前4位的数值，j位数计数器，c当前数字权值
+      for(int i = l - 1, t = 0, j = 0, c = 1; i >= 0 ; i --) {
+        t += (s[i] - '0') * c;
+        j ++;
+        c *= 10;
+        if(j == 4 || i == 0) {
+          digit[size ++] = t;
+          t = 0;
+          j = 0;
+          c = 1;
+        }
+      }
+    }
+    // 输出控制，中间的数字补零
+    void output() {
+      for(int i = size - 1; i >= 0; i --) {
+        if(i != size - 1) {
+          printf("%04d", digit[i]);
+        }
+        else {
+          printf("%d", digit[i]);
+        }
+      }
+      printf("\n");
+    }
+    // 重载+运算符
+    bigInt operator + (const bigInt &A) const {
+      bigInt ret;
+      ret.init();
+      // 注意相邻位之间的进位
+      int carry = 0, tmp;
+      // 注意循环结束条件
+      for(int i = 0 ; i < A.size || i < size ; i ++) {
+      	tmp = A.digit[i] + digit[i] + carry;
+        carry = tmp / 10000;
+        tmp %= 10000;
+        ret.digit[ret.size ++] = tmp;
+      }
+      // 注意最后一位的进位
+      if(carry != 0) {
+        ret.digit[ret.size ++] = carry;
+      }
+      return ret;
+    }
+  }a, b, c;
+  
+  // 使用方式
+  a.set(str1);
+  b.set(str2);
+  c = a + b;
+  c.output();
+  ```
+
+  
 
 ### 注意事项
 
