@@ -204,6 +204,42 @@
     - 出口为得到余数为0（即a==b的情况）
     - a % b一定小于b，入口处应有 a > b
 
+- 素数判定算法
+
+  ```c++
+  bool isPrime(int n) {
+    if(n < 2) return false;
+    int bound = (int)sqrt(n) + 1;
+    for(int i = 2 ; i < bound ; i ++) {
+      if(n % i == 0) return false;
+    }
+    return true;
+  }
+  ```
+
+- 素数的欧拉筛法
+
+  ```c++
+  bool mark[SIZE];
+  int prime[SIZE];
+  
+  void Eura() {
+    for(int i = 0 ; i < SIZE ; i ++) {
+      mark[i] = false;
+    }
+    int n = 0; // 素数个数
+    for(int i = 2 ; i < SIZE ; i ++) {
+      if(mark[i]) continue; // 被标记的都不是素数
+      prime[n ++] = i; // 找到一个新素数
+      for(int j = i * i ; j < SIZE ; j += i) { //将找到i的倍数都标记，技巧：从i*i开始标记即可
+        mark[j] = true;
+      }
+    }
+  }
+  ```
+
+  
+
 ### 注意事项
 
 - struct 结构体中不能定义string！
@@ -273,9 +309,6 @@
   while(gets(str)){}
   ```
 
-  
-
-
 
 
 
@@ -307,7 +340,6 @@
   while(!Q.empty()) Q.pop(); // 清空队列
   ```
 
-  
 
 
 
@@ -331,4 +363,3 @@
 - 求一串数组中的最值问题
   - 务必记得再每个样例循环中初始化（必须包含在输入循环里初始化）
     - int max = INT_MIN, min = INT_MAX;
-
