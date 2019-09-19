@@ -1,30 +1,5 @@
 # 机试复习笔记整理
 
-### 语法糖
-
-- sort(buf, buf + size, [cmp]) 
-
-  - cmp可选，是一个函数
-  - cmp返回true时，传入第一个参数排在第二个参数前面
-    - eg：降序排列：当第一个参数>第二个参数，返回true
-
-- 重载运算符
-
-  - 定义于struct结构体中的方法
-  - 多用于重载比较运算符用于sort排序
-  - 形式上类似于cmp函数
-  - 注意审题，如果排序标准不同建议使用cmp函数，注意多属性排序的指标选取
-
-  ```c++
-  bool operator< (const E &a) const{
-    return attr < a.attr    
-    // 将struct中的属性与传入a中的属性比较，
-    // 返回true的话struct中的属性排在前面（默认传入的a为后来的元素）
-  }
-  ```
-
-
-
 
 ### 模板类
 
@@ -315,22 +290,141 @@
   c.output();
   ```
 
+
+- 邻接链表的增删查清
+
+  ```c++
+  #include <vector>
+  #define N 1000   // 图中节点数量 
+  using namespace std;
+  // 声明边结构体（存储边的集合）
+  struct Edge {
+    int nextNode; //邻接的下一节点
+    int cost; //该边权重
+  };
+  // 创建一个N个节点的邻接链表
+  vector<Edge> edge[N];
+  // 清空邻接链表
+  for(int i = 0 ; i < N ; i ++) edge[i].clear();
+  // 添加信息至邻接链表
+  Edge e;
+  e.nextNode = 3;
+  e.cost = 10;
+  edge[1].push_back(e); // 将节点3添加至1的邻接链表中，权重位10
+  // 查询节点2的全部邻接信息
+  for(int i = 0 ; i < edge[2].size() ; i ++) {
+    int nextNode = edge[2][i].nextNode;
+    int cost = dege[2][i].cost;
+  }
+  // 删除edge[1][i]个邻接节点的信息
+  edge[1].erase(edge[1].begin() + i, edge[1].begin + i + 1);
+  ```
+
+- 并查集模板
+
+  ```c++
+  // 并查集：查找两个节点是否属于同一棵树，即找两个节点的根节点是否相同，跟节点双亲标记为-1
+  int findRoot(int x) {
+    if(Tree[x] == -1) return x; // 找到根节点，返回
+    int tmp = findRoot(Tree[x]); // 递归寻找根节点
+    Tree[x] = tmp; // 路径压缩，将当前节点双亲直接指向找到的跟节点，减少遍历深度
+    return tmp;
+  }
+  // 在创建并查集树的时候，初始化每个节点双亲为-1
+  for(int i = 0 ; i < n ; i +=) Tree[x] = -1;
+  scanf("%d%d",&a,&b); //读入a,b分别为联通边的两个节点
+  a = findRoot(a);
+  b = findRoot(b);
+  if(a != b) Tree[a] = b; //查两个节点若不属于同一集合，就合并两个集合，合并方式为修改a的根节点为b即可
+  ```
+
   
 
-### 注意事项
+### 语法糖
 
-- struct 结构体中不能定义string！
-- char[]字符串数组输出前需要为结尾添加'\0'!
-- 浮点数除法：要使用double类型定义各项数据
-- 注意减法、除法的计算顺序
-- scanf("%d") / scanf("%s") 操作会留下一个\n在缓冲区中，若下一次输入使用scanf("%c")读字符会读入此换行符！因此每次使用scanf("%c")时务必注意！先配合一个getchar()使用
+- sort(buf, buf + size, [cmp]) 
+
+  - cmp可选，是一个函数
+  - cmp返回true时，传入第一个参数排在第二个参数前面
+    - eg：降序排列：当第一个参数>第二个参数，返回true
+
+- 重载运算符
+
+  - 定义于struct结构体中的方法
+  - 多用于重载比较运算符用于sort排序
+  - 形式上类似于cmp函数
+  - 注意审题，如果排序标准不同建议使用cmp函数，注意多属性排序的指标选取
+
+  ```c++
+  bool operator< (const E &a) const{
+    return attr < a.attr    
+    // 将struct中的属性与传入a中的属性比较，
+    // 返回true的话struct中的属性排在前面（默认传入的a为后来的元素）
+  }
+  ```
 
 
 
-### C字符串处理
+### STL的使用
 
-- strcmp(char* a, char* b)
-- 传递字符串参数入函数 (char* s)
+- stack用法
+
+  ```c++
+  #include <stack>
+  stack<int> S; //定义一个int型栈结构S
+  S.push(i); //i元素压栈
+  S.pop(); //弹出栈顶元素
+  int x = S.top(); //取栈顶元素
+  while(!S.empty()) S.pop(); //清空栈S
+  ```
+
+- priority_queue用法
+
+  - 优先队列：默认为大顶堆（实现为堆的数据结构）
+  - 常用：Huffman树（这类经常需要调整数据存储为按序排列的问题）
+
+  ```c++
+  #include <queue>
+  using namespace std;
+  priority_queue<int> Q;  //定义一个int型优先队列（默认大顶堆）
+  priority_queue<int, vector<int>, greater<int> > Q;   // 小顶堆的声明（即较小数据排在前面）注意两个>之间要有空格！
+  Q.push(i);	// 将i加入Q
+  Q.pop();	// 弹出堆顶
+  Q.top(); // 取得堆顶元素
+  Q.size(); // 获取队列大小
+  while(!Q.empty()) Q.pop(); // 清空队列
+  ```
+
+- vector用法
+
+  - 常用：图问题存储邻接链表使用
+
+  ```c++
+  #include <vector>
+  #define N 1000   // 图中节点数量 
+  using namespace std;
+  // 声明边结构体（存储边的集合）
+  struct Edge {
+    int nextNode; //邻接的下一节点
+    int cost; //该边权重
+  };
+  // 创建一个N个节点的邻接链表
+  vector<Edge> edge[N];
+  // 清空邻接链表
+  for(int i = 0 ; i < N ; i ++) edge[i].clear();
+  // 添加信息至邻接链表
+  Edge e;
+  e.nextNode = 3;
+  e.cost = 10;
+  edge[1].push_back(e); // 将节点3添加至1的邻接链表中，权重位10
+  // 查询节点2的全部邻接信息
+  for(int i = 0 ; i < edge[2].size() ; i ++) {
+    int nextNode = edge[2][i].nextNode;
+    int cost = dege[2][i].cost;
+  }
+  // 删除edge[1][i]个邻接节点的信息
+  edge[1].erase(edge[1].begin() + i, edge[1].begin + i + 1);
+  ```
 
 
 
@@ -387,41 +481,6 @@
   ```
 
 
-
-
-### STL的使用
-
-- stack用法
-
-  ```c++
-  #include <stack>
-  stack<int> S; //定义一个int型栈结构S
-  S.push(i); //i元素压栈
-  S.pop(); //弹出栈顶元素
-  int x = S.top(); //取栈顶元素
-  while(!S.empty()) S.pop(); //清空栈S
-  ```
-- priority_queue用法
-
-  - 优先队列：默认为大顶堆（实现为堆的数据结构）
-  - 常用：Huffman树（这类经常需要调整数据存储为按序排列的问题）
-
-  ```c++
-  #include <queue>
-  priority_queue<int> Q;  //定义一个int型优先队列（默认大顶堆）
-  priority_queue<int, vector<int>, greater<int> > Q;   // 小顶堆的声明（即较小数据排在前面）注意两个>之间要有空格！
-  Q.push(i);	// 将i加入Q
-  Q.pop();	// 弹出堆顶
-  Q.top(); // 取得堆顶元素
-  Q.size(); // 获取队列大小
-  while(!Q.empty()) Q.pop(); // 清空队列
-  ```
-
-
-
-
-
-
 ### 重要规律
 
 - 判定两棵二叉树为同一二叉树
@@ -440,3 +499,18 @@
 - 求一串数组中的最值问题
   - 务必记得再每个样例循环中初始化（必须包含在输入循环里初始化）
     - int max = INT_MIN, min = INT_MAX;
+
+### C字符串处理
+
+- strcmp(char* a, char* b)
+- strlen(char *a)
+- strcpy(char* a, char* b)
+- 传递字符串参数入函数 (char* s)
+
+### 注意事项
+
+- struct 结构体中不能定义string！
+- char[]字符串数组输出前需要为结尾添加'\0'!
+- 浮点数除法：要使用double类型定义各项数据
+- 注意减法、除法的计算顺序
+- scanf("%d") / scanf("%s") 操作会留下一个\n在缓冲区中，若下一次输入使用scanf("%c")读字符会读入此换行符！因此每次使用scanf("%c")时务必注意！先配合一个getchar()使用
