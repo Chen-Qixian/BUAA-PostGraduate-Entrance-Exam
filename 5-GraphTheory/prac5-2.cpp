@@ -1,61 +1,95 @@
 /*
 	Head of a Gang
+	并查集的加强版，重点练习！
 */
 #include <bits/stdc++.h>
-#define SIZE 1001
+#define SIZE 1010
 using namespace std;
 
-int tree[SIZE];
 int sum[SIZE];
-map<string,int[2]> m;
+char namelist[SIZE][5];
+int num = 0;
+
+struct Person{
+	char name[5];
+	int parent;
+	int weight;
+} p[SIZE];
+
+struct Gang{
+	char head[5];
+	int size;
+	bool operator < (const Gang &a) const {
+		int tmp = strcmp(head, a.head);
+		return tmp < 0;
+	}
+} g[SIZE];
 
 int findRoot(int x) {
-	if(tree[x] == -1) return x;
-	int tmp = findRoot(tree[x]);
-	tree[x] = tmp;
+	if(p[x].parent < 0) return x;
+	int tmp = findRoot(p[x].parent);
+	p[x].parent = tmp;
 	return tmp;
 }
 
+int getId(char *s) {
+	for(int i = 0; i < num ; i ++) {
+		if(strcmp(s, namelist[i]) == 0){
+			return i;
+		}
+	}
+	strcpy(namelist[num ++], s);
+	return num - 1;
+}
+
 int main(void) {
-	int n, k, time, id;
-	string a, b;
-	int x, y;
+	int n, k;
 	while(scanf("%d%d", &n, &k) != EOF) {
+		char a[5], b[5];
+		int time, x, y, ans;
 		for(int i = 0 ; i < SIZE ; i ++) {
-			tree[i] = -1;
+			p[i].parent = -1;
+			p[i].weight = 0;
+			g[i].size = 0;
 			sum[i] = 0;
 		}
-		m.clear();
-		id = 0;
 		while(n --) {
 			scanf("%s%s%d", a, b, &time);
-			if(m.find(a) == m.end()) {
-				m[a][0] = id ++;
-				m[a][1] = 0;
-			}
-			if(m.find(b) == m.end()) {
-				m[b][0] = id ++;
-				m[b][1] = 0;
-			}
-			m[a][1] += time;
-			m[b][1] += time;
-			x = findRoot(m[a][0]);
-			y = findRoot(m[b][0]);
+			x = getId(a);
+			y = getId(b);
+			strcpy(p[x].name, a);
+			strcpy(p[y].name, b);
+			p[x].weight += time;
+			p[y].weight += time;
+			x = findRoot(x);
+			y = findRoot(y);
 			if(x != y) {
-				tree[x] = y;
-				sum[y] += sum[x];
+				p[x].parent += p[y].parent;
+				p[y].parent = x;
+				sum[x] += sum[y];
 			}
-			sum[y] += time;
+			sum[x] += time;
 		}
-		int ans = 0;
-
-		for(int i = 0 ; i < id ; i ++) {
-			if(tree[x] == -1) {
+		ans = 0;
+		for(int i = 0; i < num ; i ++) {
+			if(p[i].parent < -2 && sum[i] > k){
+				g[ans].size = -p[i].parent;
+				int idx = i, _max = p[i].weight;
+				for(int j = 0 ; j < num ; j ++) {
+					if(findRoot(j) == i && p[j].weight > _max) {
+						idx = j;
+						_max = p[j].weight;
+					}
+				}
+				strcpy(g[ans].head, p[idx].name); 
 				ans ++;
 			}
 		}
-
+		sort(g, g + ans);
 		printf("%d\n", ans);
+		for(int i = 0; i < ans ; i ++) {
+			printf("%s %d\n", g[i].head, g[i].size);
+		}
 	}
 	return 0;
 }
