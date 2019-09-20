@@ -429,7 +429,141 @@
     ```
 
 - Dijkstra算法模板
-  - 存储使用
+
+  - 存储使用邻接链表存储 vector<E> e[N];
+  - 标记数组 bool mark[N]; 表示当前点是否有加入到集合K中（集合K为已经确定的最短路点集）
+  - 距离向量 int dis[N]; 当mark[i]为true时，表示从源到i点的最短距离；否则表示从源出发经过K中某点到达i点的最短距离
+  - 外层循环n-1次，除源点直接初始化确定外，其他n-1个点需要依次确定
+  - 内层2个循环，第一个循环遍历新加入点相邻且不在K中的点，更新距离向量至最短；第二个循环遍历所有点，跳过所有已经在K中的点和不可达点，找到一个新的到源点到最小距离，确定为到该点的最短距离，将这个新点加入K，更新，进行下一圈外层循环
+  - 最后得到的结果是单源最短路径，即从特定点出发能到达其他所有点的最短距离
+  - 代码模板如下
+
+  ```c++
+  #define N 1001 // 点总数上限 
+  // 声明邻接链表结构体
+  struct E {
+    int next; // 下一相邻点
+    int c; // 权重
+  };
+  vector<E> e[N];
+  int dis[N];
+  bool mark[N];
+  int main() {
+    int n, m, a, b, c;
+    scanf("%d%d", &n, &m); //输入点总数n和边总数m
+    // 初始化
+    for(int i = 1 ; i <= n ; i ++) {
+      e[i].clear();
+      dis[i] = -1;
+      mark[i] = false;
+    }
+    // 输入图信息
+    while(m --) {
+      scanf("%d%d%d", &a, &b, &c);
+      E tmp;
+      tmp.c = c;
+      tmp.next = a;
+      e[b].push_back(tmp);
+      tmp.next = b;
+      e[a].push_back(tmp); // 无向图邻接链表两个方向都要存储 
+    }
+    // 初始化第一个点
+    int newP = 1; // 这个数值不一定是1，看题意要求从第几个点开始的最短路径，即设置为源
+    mark[newP] = true;
+    dis[newP] = 0;
+    // 外层循环n-1次依次确定n-1个新加入点
+    for(int i = 1 ; i < n ; i ++) {
+      // 第一个内层循环遍历新加入点相邻且不在K中的点，更新距离向量dis
+      for(int j = 0 ; j < e[newP].size() ; j ++) {
+        int next = e[newP][j].next;
+        int c = e[newP][j].c;
+        if(mark[next]) continue;
+        // !!易错点注意这里要与经过新加入的点进行比较！
+        if(dis[next] == -1 || dis[next] > dis[newP] + c) {
+          dis[next] = dis[newP] + c;
+        }
+      }
+      // 第二个内层循环遍历所有可达且不在K中的点，找距离最短的点确定之，并加入K
+      int min = INT_MAX;
+      for(int j = 1 ; j <= n ; j ++) {
+        if(mark[j]) continue;
+        if(dis[j] == -1) continue;
+        if(dis[j] < min) {
+          min = dis[j];
+          newP = j;
+        }
+      }
+      mark[newP] = true;
+    }
+    printf("%d\n", dis[n]); // 打印输出到目标点距离值（按题意未必是n）
+    return 0;
+  }
+  ```
+
+- 拓扑排序模板
+
+  - 使用邻接链表存储，存下一节点数字即可
+  - 每次寻找入度为0的节点，删除之，删除以之为尾的所有边
+  - 循环上述过程至无入度为0的点，若还有点在图中，说明有环，拓扑排序失败
+
+  ```c++
+  #include <bits/stdc++.h>
+  #define N 110
+  using namespace std;
+  
+  vector<int> e[N]; // 邻接链表存储该有向图
+  queue<int> q; // 队列存储入度为0点（不一定用queue，只是存储一下，便于处理）
+  int indeg[N]; // 存储每个节点入度
+  
+  int main(void) {
+  	int n, m, x, y;
+  	while(scanf("%d%d", &n, &m) != EOF) {
+  		if(n == 0) break;
+  		while(q.empty() == false) q.pop(); // 每次初始化清空队列
+      // 初始化
+  		for(int i = 0 ; i < n ; i ++) {
+  			e[i].clear();
+  			indeg[i] = 0;
+  		}
+      // 有向图初始化，设置入度
+  		while(m --){
+  			scanf("%d%d", &x, &y);
+  			indeg[y] ++;
+  			e[x].push_back(y);
+  		}
+  		// 统计处理过的点数
+  		int cnt = 0;
+  		// 找所有入度为0的点加入q
+  		for(int i = 0 ; i < n ; i ++) {
+  			if(indeg[i] == 0) {
+  				q.push(i);
+  			}
+  		}
+  		// 循环删除入度0点以及相邻边
+  		while(q.empty() == false) {
+  			int t = q.front();
+  			q.pop();
+  			cnt ++; // 当弹出一个点后证明该点被处理
+  			for(int i = 0 ; i < e[t].size() ; i ++) {
+  				indeg[e[t][i]] --;
+          // 删除尾点入度后，尾点入度若变为0，则将该点加入处理队列
+  				if(indeg[e[t][i]] == 0) {
+  					q.push(e[t][i]);
+  				}
+  			}
+  		}
+  		if(cnt == n) {
+  			printf("YES\n"); // 拓扑排序成功
+  		}
+  		else {
+  			printf("NO\n"); // 有环图
+  		}
+  	}
+  	return 0;
+  }
+  ```
+
+  
 
 ### 语法糖
 
@@ -517,7 +651,21 @@
   edge[1].erase(edge[1].begin() + i, edge[1].begin + i + 1);
   ```
 
+- queue用法
 
+  - 维持队列FIFO性质
+
+  ```c++
+  #include <queue>
+  queue<int> Q;
+  Q.push(i);
+  int head = Q.front();
+  Q.pop();
+  Q.empty();
+  while(Q.empty() == false) Q.pop(); // 清空队列
+  ```
+
+  
 
 ### I/O
 
