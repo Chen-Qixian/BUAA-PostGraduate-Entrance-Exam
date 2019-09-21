@@ -567,7 +567,13 @@
   - BFS实现的数据结构为一个队列，队列中存储一个状态结构体
   - BFS非常适合解决找寻最优解的问题
   - 关键是确定状态的转换方式，确定有效状态，并添加状态标记
-  - 
+  - 模板代码如下
+  
+  ```c++
+  
+  ```
+  
+  
   
 - 全排列模板
 
@@ -600,8 +606,6 @@
     perm(0);
   }
   ```
-
-  
 
 - DFS模板
 
@@ -642,7 +646,64 @@
   }
   ```
 
-  
+- 错位排列模板（欧拉装错信封问题）
+
+  ```c++
+  #include <stdio.h>
+  long long f[20];
+  int n;
+  long long F(int x) {
+    if(x <= 1) return 0;
+    if(x == 2) return 1;
+    return (x - 1) * F(x - 1) + (x - 1) * F(x - 2); // 错排公式 
+  }
+  int main(void) {
+    scanf("%d", &n);
+    printf("%lld", F(n));
+  }
+  ```
+
+- LIS 模板
+
+  - 最长递增子序列：确定如下的递推关系
+    - F[1] = 1
+    - F[i] = max(1, F[j] + 1) , j < i , ai > aj
+  - 若是递减子序列：将上述ai > aj调整为ai < aj即可
+
+  ```c++
+  #include <bits/stdc++.h>
+  #define N 50
+  using namespace std;
+  int a[N], dp[N];
+  int main(void) {
+    int k, ans, tmax;
+    while(scanf("%d", &k) != EOF) {
+      for(int i = 0 ; i < k ; i ++) {
+        scanf("%d", &a[i]);
+      }
+      dp[0] = 1;
+      // 要点1:每个DP需要根据之前所有遍历j<i的DP中取得最值
+      for(int i = 0 ; i < k ; i ++) {
+        tmax = 1;
+        for(int j = 0 ; j < i ; j ++) {
+          if(a[j] >= a[i]) {
+            tmax = max(tmax, dp[j] + 1);
+          }
+        }
+        dp[i] = tmax;
+      }
+      // 要点2:最终结果要从所有DP中选最优解
+      ans = 0;
+      for(int i = 0 ; i < k ; i ++) {
+        ans = max(ans, dp[i]);
+      }
+      printf("%d\n", ans);
+    }
+    return 0;
+  }
+  ```
+
+  - 时间O(n^2) 空间O(n)
 
 ### 语法糖
 
