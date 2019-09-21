@@ -705,6 +705,52 @@
 
   - 时间O(n^2) 空间O(n)
 
+- LCS 模板
+
+  - 思路：用dp[x] [y]存储s1中前x个字符与s2中前y个字符组成的最长公共子序列长度
+  - 递推关系：
+    - dp[i] [0] = 0 , 0 <= i <= n
+    - dp[0] [j] = 0 , 0 <= j <= m
+    - dp[x] [y] = dp[x-1] [y-1] + 1 , s1[x] == s2[y]
+    - dp[x] [y] = max(dp[x-1] [y], dp[x] [y-1]) , s1[x] != s2[y]
+  - 时间复杂度O(l1 * l2)
+
+  - 样例代码：
+
+  ```c++ 
+  #include <bits/stdc++.h>
+  #define N 110
+  using namespace std;
+  int dp[N][N];
+  char s1[N], s2[N];
+  int main(void) {
+    while(scanf("%s", s1) != EOF) {
+      scanf("%s", s2);
+      int l1 = strlen(s1), l2 = strlen(s2);
+      for(int i = 0 ; i <= l1 ; i ++) {
+        dp[i][0] = 0;
+      }
+      for(int j = 0 ; j <= l2 ; j ++) {
+        dp[0][j] = 0;
+      }
+      for(int i = 1 ; i <= l1 ; i ++) {
+        for(int j = 1 ; j <= l2 ; j ++) {
+          if(s1[i-1] == s2[j-1]) {
+            dp[i][j] = dp[i-1][j-1] + 1;
+          }
+          else {
+            dp[i][j] = max(dp[i][j-1], dp[i-1][j]);
+          }
+        }
+      }
+      printf("%d\n",dp[l1][l2]);
+    }
+  }
+  ```
+
+- 0-1背包问题模板
+- 
+
 ### 语法糖
 
 - sort(buf, buf + size, [cmp]) 
