@@ -568,7 +568,81 @@
   - BFS非常适合解决找寻最优解的问题
   - 关键是确定状态的转换方式，确定有效状态，并添加状态标记
   - 
+  
 - 全排列模板
+
+
+  - 类似于DFS
+
+  ```c++
+  int num[N]; // 存储全排列
+  bool mark[N]; // 标记当前数字是否被使用
+  int n; // 输入需要全排列的总数
+  
+  void perm(int k) {
+    if(k == n) {
+      for(int i = 0 ; i < n ; i ++) {
+        printf("%d",num[i]);
+      }
+      printf("\n");
+      return;
+    }
+    for(int i = 1 ; i <= n ; i ++) {
+      if(mark[i]) continue;
+      num[k] = i;
+      mark[i] = true;
+      perm(k + 1);
+      mark[i] = false;
+    }
+  }
+  
+  int main(void) {
+    perm(0);
+  }
+  ```
+
+  
+
+- DFS模板
+
+
+  - DFS的实现为递归
+  - 重点是确定状态元组，状态转移方式，以及出口
+  - 易错点：dfs后需要将遍历过的状态复原
+
+  ```c++
+  // 遍历图：状态转移数组
+  int go[][2] = {
+  	1 , 0,
+  	-1, 0,
+  	0 , 1,
+  	0 ,-1
+  };
+  // dfs：针对此题有3个量在进行状态转移：位置坐标x，y以及时间信息time
+  void dfs(int x, int y, int time) {
+  	for(int i = 0 ; i < 4 ; i ++) {
+  		int nx = x + go[i][0];
+  		int ny = y + go[i][1];
+  		int nt = time + 1;
+      // 先排除不可达状态
+  		if(nx < 0 || nx >= n || ny < 0 || ny >= m) continue;
+  		if(maze[nx][ny] == 'X') continue;
+      // 确定出口为时间恰好为t，到达dx和dy点
+  		if(nx == dx && ny == dy && nt == t) {
+  			flag = true;
+  			return;
+  		}
+      // 递归前设置该点为已访问
+  		maze[nx][ny] = 'X';
+  		dfs(nx, ny, nt);
+  		// 注意DFS每层递归后将该点恢复到原来状态
+  		maze[nx][ny] = '.';
+  	}
+  	return;
+  }
+  ```
+
+  
 
 ### 语法糖
 
