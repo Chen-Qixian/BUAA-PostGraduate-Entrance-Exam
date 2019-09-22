@@ -1,9 +1,9 @@
-# 机试复习笔记整理
+# 先先的机试笔记
 
 
 ### 模板类
 
-- 判断闰年宏定义模板【别记错了】！
+- 判断闰年宏定义模板
 
   ```c++
   #define ISLEAP(x) (x % 100 != 0 && x % 4 == 0) || (x % 400 == 0) ? 1 : 0
@@ -222,7 +222,7 @@
 - 高精度整数运算
 
   ```c++
-  // 高精度整数结构体定义
+  // 高精度整数结构体定义, SIZE为最大位数
   struct bigInt{
     int digit[SIZE];
     int size;
@@ -280,6 +280,65 @@
         ret.digit[ret.size ++] = carry;
       }
       return ret;
+    }
+    // 重载-运算符(unsure)
+    bigInt operator - (const bigInt &a) const {
+      bigInt ret;
+      ret.init();
+      int carry = 0;
+      for(int i = 0 ; i < a.size || i < size ; i ++) {
+        int tmp = digit[i] - a.digit[i] - carry;
+        if(tmp < 0){
+          carry = 1;
+          tmp += 10000;
+        }
+        ret.digit[ret.size ++] = tmp;
+      }
+      return ret;
+    }
+     
+    // 重载*运算符
+    bigInt operator * (int x) const {
+      bigInt ret;
+      ret.init();
+      int carry = 0;
+      for(int i = 0 ; i < size ; i ++) {
+        int tmp = digit[i] * x + carry;
+        carry = tmp / 10000;
+        tmp %= 10000;
+        ret.digit[ret.size ++] = tmp;
+      }
+      if(carry != 0) ret.digit[ret.size ++] = carry;
+      return ret;
+    }
+    // 重载/运算符
+    bigInt operator / (int x) const {
+      bigInt ret;
+      ret.init();
+      int remainer = 0;
+      for(int i = size - 1 ; i >= 0 ; i --) {
+        int t = (remainer * 10000 + digit[i]) / x;
+        int r = (remainer * 10000 + digit[i]) % x;
+        remainer = r;
+        ret.digit[i] = t; // 注意可能为0，不能直接设置size
+      }
+      ret.size = 0;
+      for(int i = 0 ; i < SIZE ; i ++) {
+        if(ret.digit[i] != 0){
+          ret.size = i;
+        }
+      }
+      ret.size ++;
+      return ret;
+    }
+    
+    // 重载%运算符
+    int operator % (int x) const {
+      int r = 0;
+      for(int i = size - 1 ; i >= 0 ; i --) {
+        r = (r * 10000 + digit[i]) % x;
+      }
+      return r;
     }
   }a, b, c;
   
@@ -857,7 +916,15 @@
   }
   ```
 
+- sscanf(char *src, char *format, ...)
 
+  - eg:
+
+  ```c++
+  sscanf("2019-9-22 18:18:18,888 Sun", "%d-%d-%d %d:%d:%d,%d %s", &year, &month, &day, &hour, &minute, &second, day);
+  ```
+
+  - 用于格式化输入/输出（保存格式的输出，就将该字符串保存至结构体中即可）
 
 ### STL的使用
 
@@ -934,7 +1001,6 @@
   while(Q.empty() == false) Q.pop(); // 清空队列
   ```
 
-  
 
 ### I/O
 
