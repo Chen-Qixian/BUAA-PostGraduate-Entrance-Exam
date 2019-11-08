@@ -1,3 +1,6 @@
+/*
+	注意节点分配loc每次循环置0
+*/
 #include <bits/stdc++.h>
 using namespace std;
 #define N 110
