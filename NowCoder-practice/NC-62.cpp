@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+
 int n, k;
 int m[11][11];
 int tmp[11][11];
